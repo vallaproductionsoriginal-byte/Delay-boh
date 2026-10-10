@@ -1,0 +1,379 @@
+modules/juce_graphics/drawables/lunasvg/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/sammycage/lunasvg
+
+The files in this directory are from the LunaSVG 3.5.0 release downloaded in a tarball from
+https://github.com/sammycage/lunasvg/releases/tag/v3.5.0
+
+First a script was used to modify them as little as possible to enable us building them in the
+JUCE module structure, as well as to hide the LunaSVG symbols and rename the PlutoVG symbols. The
+latter modification is needed to allow JUCE projects to use LunaSVG as a separate dependency. The
+script is shown at the end of this file.
+
+In separate commits a number of manual changes were added that allow us to replace LunaSVG's
+built-in renderer and use a JUCE Drawable hierarchy instead. These changes are in commits with the
+"lunasvg:" prefix.
+
+In a commit with "lunasvg:" prefix, a fix was applied to allow compilation with Xcode 12.4.
+
+In a commit with the "plutovg:" prefix, we turned off the optimisations for
+the `juce_plutovg_font_face_cache_load_file` function under MSVC. Without this change an internal
+compiler error occurs when building the file in Release mode.
+
+```
+#!/bin/bash
+
+# During a lunasvg version bump, this script must be placed in the
+# drawables/lunasvg directory and executed.
+
+if [[ "$(uname)" != "Darwin" ]]; then
+    echo "This script only works on macOS."
+    exit 1
+fi
+
+SELF_DIR="$(cd "$(dirname "$0")" && pwd)" || { echo "Error: cannot determine script directory" >&2; exit 1; }
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Wrap lunasvg code in an anonymous namespace
+find "$SELF_DIR/source" -type f \( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) | while read -r file; do
+    last_include=$(grep -n '#include' "$file" | tail -1 | cut -d: -f1)
+
+    if [ -z "$last_include" ]; then
+        echo "Skipping $file (no #include found)"
+        continue
+    fi
+
+    closing_line=$(grep -n '} // namespace lunasvg' "$file" | tail -1 | cut -d: -f1)
+
+    if [ -z "$closing_line" ]; then
+        echo "Skipping $file (no '} // namespace lunasvg' found)"
+        continue
+    fi
+
+    sed -i '' "${last_include}a\\
+namespace {
+" "$file"
+
+    closing_line=$((closing_line + 1))
+
+    sed -i '' "${closing_line}a\\
+}
+" "$file"
+
+    echo "Processed $file"
+done
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Wrap lunasvg.h public namespace in an anonymous namespace
+file="$SELF_DIR/include/lunasvg.h"
+
+first_namespace=$(grep -n 'namespace lunasvg {' "$file" | head -1 | cut -d: -f1)
+last_closing=$(grep -n '} // namespace lunasvg' "$file" | tail -1 | cut -d: -f1)
+
+if [ -n "$first_namespace" ] && [ -n "$last_closing" ]; then
+    sed -i '' "${first_namespace}i\\
+namespace {
+" "$file"
+
+    last_closing=$((last_closing + 1))
+
+    sed -i '' "${last_closing}a\\
+}
+" "$file"
+
+    echo "Processed $file"
+else
+    echo "Skipping $file (namespace markers not found)"
+fi
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Prefix all plutovg symbols with juce_ to avoid collisions
+find "$SELF_DIR" -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) | while read -r file; do
+    sed -i '' 's/plutovg_/juce_plutovg_/g; s/PLUTOVG_/JUCE_PLUTOVG_/g' "$file"
+    echo "Replaced plutovg_ in $file"
+done
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+```
+
+
+modules/juce_graphics/image_formats/jpglib/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://ijg.org
+
+I've included libjpeg in the JUCE tree because loading jpegs is a pretty useful thing to
+be able to do, but I've left out as many files as possible to keep it lean-and-mean.
+
+If you want to get hold of the full version of libjpeg, it's freely available at:
+
+http://www.ijg.org/
+
+Some source code changes were required to make this JUCE compatible, they are as follows:
+    * jmemsys.h: C-style include guard added
+    * jdct.h: C-style include guard added
+
+    * jconfig.h: Comment out _WIN32 ifdef to force boolean to be unsigned char on all
+                 platforms.
+
+Please note that part of the IJG's license for libjpeg states that:
+
+  "If you use it in a program, you must acknowledge somewhere in
+   your documentation that you've used the IJG code".
+
+..so if you release a JUCE program that reads JPEGs, you should probably give them a mention.
+
+
+
+modules/juce_graphics/image_formats/libwebp/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://chromium.googlesource.com/webm/libwebp
+Version:  1.6.0 (tag v1.6.0, commit 4fa21912338357f89e4fd51cf2368325b59e9bd9)
+
+Vendored by vendor.py in this directory; rerun it to update. It copies the
+files upstream compiles into libwebp and libsharpyuv on x86 and Arm and every
+header reachable from them, rewrites their includes as paths relative to the
+JUCE modules directory, and applies two fixes to src/dsp/cpu.h: one keeping
+the x86 SIMD paths off ARM64EC targets, and one shimming the AVX2 intrinsics
+missing from GCC before version 11.
+
+
+modules/juce_graphics/image_formats/pnglib/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: http://www.libpng.org/pub/png/libpng.html
+
+These files are from the libpng library.
+
+The zlib include path in pngstruct.h has been modified to point to the JUCE internal zlib.h when
+that file is available.
+
+The error on multiple-inclusion in pngpriv.h has been removed and replaced with a standard C-style
+include guard.
+
+modules/juce_graphics/unicode/sheenbidi/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/Tehreer/SheenBidi
+
+- Include paths to SheenBidi headers in <angle brackets> have been swapped for
+  versions that explicitly point inside the juce_graphics module.
+
+
+modules/juce_audio_formats/codecs/flac/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://xiph.org/flac
+
+The files in this directory are from the FLAC 1.5.0 release downloaded in a tarball from
+https://github.com/xiph/flac/releases/tag/1.5.0
+
+They have been modified as little as possible, so that when they are included by
+JUCE they compile without warnings and work correctly on the supported platforms.
+
+Below I will refer to the contents of the tarball as RELEASE and to our repo as JUCE.
+
+The steps carried out when including the 1.5.0 version
+* The contents of RELEASE/include/FLAC and RELEASE/include/share were copied to
+  JUCE/[..]/codecs/flac
+* The contents of RELEASE/libFLAC were copied to JUCE/[..]/codecs/flac/libFLAC
+* The includes in all these files were retargeted, to be relative to the file that does the
+  including, so that we don't have to rely on e.g. flac/libFLAC/include being among the include
+  directories, like it is when building FLAC with the official makefiles. All this retargeting is
+  done per-line with a Python script. All the rules used for the retargeting can be seen in the code
+  excerpt at [1].
+* Then I will do a compile/test/modify loop, until it works and compiles without warnings. The
+  changes made are mostly suppressing warnings.
+* Then I delete all library files, and only re-add those that are needed for successful compilation.
+  This delete step is propagated back to older commits, so that unneeded files are never added to
+  the GIT repo.
+
+In order to get the lpc_intrin_neon.c file to build with MSVC, a new function
+'FLAC__build_int32x4_t' was added, and all braced initialisations of int32x4_t types were switched
+to use the new function instead.
+
+[1]: Code excerpt used for retargeting includes in the copied files
+```
+def transform(path: Path, line: str) -> str:
+    if path.match("libFLAC/*"):
+        line = line.replace('#include "private', '#include "include/private')
+        line = line.replace('#include "protected', '#include "include/protected')
+        line = line.replace('#include "share/', '#include "../')
+        line = line.replace('#include "FLAC/', '#include "../')
+
+    if path.match("libFLAC/include/private/*") or path.match(
+        "libFLAC/include/public/*"
+    ):
+        line = line.replace('#include "share/', '#include "../../../')
+        line = line.replace('#include "FLAC/', '#include "../../../')
+
+    if path.match("*"):
+        line = line.replace('#include "share/', '#include "')
+
+    if path.match("libFLAC/include/private/*"):
+        line = line.replace('#include "private/', '#include "')
+
+    if path.match("libFLAC/include/protected/*"):
+        line = line.replace('#include "private/', '#include "../private/')
+        line = line.replace('#include "FLAC/', '#include "../../../')
+
+    line = line.replace('#include "include/private/macros.h"', "")
+
+    return line
+```
+
+
+modules/juce_audio_formats/codecs/ogg/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/xiph/ogg.git
+Version:  1.3.6 (tag v1.3.6, commit be05b13e98b048f0b5a0f5fa8ce514d56db5f822)
+
+Vendored by vendor.py in this directory; rerun it to update. It copies the
+files listed in it verbatim, rewrites their '#include <ogg/...>' lines as
+paths relative to the including file (JUCE modules have no include
+directories), and generates include/ogg/config_types.h from upstream's
+config_types.h.in using the <stdint.h> types.
+
+
+modules/juce_audio_formats/codecs/oggvorbis/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/xiph/ogg
+Version: 1.3.4
+
+The libogg sources in this directory (ogg.h, os_types.h, crctable.h,
+bitwise.c, framing.c) are from libogg 1.3.4, modified for JUCE: include
+paths flattened, explicit casts added for C++ compilation, and some MSVC
+warnings disabled. The accompanying libvorbis sources are in the
+libvorbis-1.3.7 directory.
+
+The libvorbis sources have had a few include paths changed so that they build
+smoothly. Any significant code modifications are marked by "JUCE CHANGE STARTS
+HERE" and "JUCE CHANGE ENDS HERE" comments.
+
+
+modules/juce_audio_formats/codecs/opus/libopusenc/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/xiph/libopusenc.git
+Version:  0.3 (tag v0.3, commit 0dba1bea736ab8bb811409dce80c994a00a2ced9)
+
+Vendored by vendor.py in the parent directory; rerun it to update. It copies
+the .c files the unity translation units compile and every header reachable
+from them, and rewrites their includes as paths relative to the including
+file.
+
+
+modules/juce_audio_formats/codecs/opus/opus/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/xiph/opus.git
+Version:  1.6.1 (tag v1.6.1, commit 22244de5a79bd1d6d623c32e72bf1954b56235be)
+
+Vendored by vendor.py in the parent directory; rerun it to update. It copies
+the .c files the unity translation units compile and every header reachable
+from them, and rewrites their includes as paths relative to the including
+file.
+
+
+modules/juce_audio_formats/codecs/opus/opusfile/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/xiph/opusfile.git
+Version:  0.12-59-g6dfd29e (commit 6dfd29e7adb87f2e193575fc3fa88cbf1a0b27df)
+
+Vendored by vendor.py in the parent directory; rerun it to update. It copies
+the .c files the unity translation units compile and every header reachable
+from them, and rewrites their includes as paths relative to the including
+file.
+
+
+modules/juce_audio_formats/codecs/vorbis/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/xiph/vorbis
+Version:  1.3.7
+
+The libvorbis sources in this directory are from the libvorbis 1.3.7 release,
+with the includes rewritten as paths relative to the including file (JUCE
+modules have no include directories). lib/ is upstream's lib/, and
+include/vorbis/ holds the public headers. libogg, which these sources depend
+on, is vendored separately in ../ogg.
+
+
+modules/juce_core/zip/zlib/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://zlib.net
+
+# inflate.h and inftrees.h
+
+Include guards were added to these files to support multiple inclusion in a
+unity-style build.
+
+modules/juce_audio_processors_headless/format_types/LV2_SDK/lilv/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://drobilla.net/software/lilv.html
+Version: 0.24.12
+
+Files not strictly required to build the library, including the generated
+config headers, have been removed. A handwritten lilv_config.h is provided in
+the parent directory, alongside juce_lv2_config.h which defines the library
+version. Remember to update the versions in the config headers if you ever
+update the library versions.
+
+The include of dlfcn.h has been removed from src/world.c.
+
+A leak of world->opt.lv2_path when calling lilv_world_set_option multiple times
+has been fixed.
+
+A leak of plugin classes when calling lilv_world_load_plugin_classes multiple
+times has been fixed.
+
+
+modules/juce_audio_processors_headless/format_types/LV2_SDK/lv2/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://lv2plug.in
+
+Files not strictly required to build the lilv library have been removed.
+
+clang-tidy warning suppression comments have been added to lv2/atom/util.h.
+
+
+modules/juce_audio_processors_headless/format_types/LV2_SDK/serd/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://drobilla.net/software/serd.html
+Version: 0.30.10
+
+Files not strictly required to build the lilv library, including the generated
+config headers, have been removed. A handwritten serd_config.h is provided in
+the parent directory, alongside juce_lv2_config.h which defines the library
+version. Remember to update the versions in the config headers if you ever
+update the library versions.
+
+
+modules/juce_audio_processors_headless/format_types/LV2_SDK/sord/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://drobilla.net/software/sord.html
+Version: 0.16.9
+
+Files not strictly required to build the lilv library, including the generated
+config headers, have been removed. A handwritten sord_config.h is provided in
+the parent directory, alongside juce_lv2_config.h which defines the library
+version. Remember to update the versions in the config headers if you ever
+update the library versions.
+
+
+modules/juce_audio_processors_headless/format_types/LV2_SDK/sratom/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://drobilla.net/software/sratom.html
+Version: 0.6.8
+
+Files not strictly required to build the lilv library, including the generated
+config headers, have been removed. juce_lv2_config.h in the parent directory
+defines the library version. Remember to update the version there if you ever
+update the library version.
+
+
+modules/juce_audio_processors_headless/format_types/VST3_SDK/JUCE_UPSTREAM.txt
+========================================================================
+Upstream: https://github.com/steinbergmedia/vst3sdk
+
+The SDK has been modified in two places where warnings from clang-tidy 22 could
+not be suppressed:
+
+    public.sdk/source/common/commonstringconvert.cpp
+    public.sdk/source/vst/utility/stringconvert.cpp
+
+Both modifications are marked with a `// JUCE MODIFICATION` comment.

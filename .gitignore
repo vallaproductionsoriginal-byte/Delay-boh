@@ -1,0 +1,9 @@
+# Allow only public release documentation and licence notices in this repository.
+*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/THIRD_PARTY_NOTICES.md
+!/CHANGELOG.md
+!/licenses/
+!/licenses/*.txt
