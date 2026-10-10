@@ -4,6 +4,8 @@ Plug-in delay VST3 gratuito per **macOS Apple Silicon**, versione **1.0.0**.
 
 [Scarica Delay-boh 1.0.0](https://github.com/vallaproductionsoriginal-byte/Delay-boh/releases/download/v1.0.0/Delay-boh-1.0.0-mac-arm64.zip) · [Tutte le release](https://github.com/vallaproductionsoriginal-byte/Delay-boh/releases)
 
+![Interfaccia di Delay-boh: controlli del delay e pagina Time / Sync](docs/Delay-boh-interface.png)
+
 ## Requisiti
 
 - Mac Apple Silicon, architettura arm64.
