@@ -1,6 +1,6 @@
 # Third-party notices
 
-La licenza MIT di Delay-boh copre il software e la documentazione di Francesco. Le componenti di terze parti restano soggette alle proprie licenze; la MIT del progetto non concede diritti separati sul framework JUCE.
+La licenza MIT di Delay-boh copre il software e la documentazione di Valla Productions. Le componenti di terze parti restano soggette alle proprie licenze; la MIT del progetto non concede diritti separati sul framework JUCE.
 
 ## JUCE
 

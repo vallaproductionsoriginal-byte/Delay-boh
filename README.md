@@ -1,8 +1,8 @@
 # Delay-boh
 
-Plug-in delay VST3 gratuito per **macOS Apple Silicon**, versione **1.0.0**.
+Plug-in delay gratuito di **Valla Productions** per **macOS Apple Silicon**, versione **1.0.1**, nei formati **VST3 e Audio Unit (AU)**.
 
-[Scarica Delay-boh 1.0.0](https://github.com/vallaproductionsoriginal-byte/Delay-boh/releases/download/v1.0.0/Delay-boh-1.0.0-mac-arm64.zip) · [Tutte le release](https://github.com/vallaproductionsoriginal-byte/Delay-boh/releases)
+[Scarica Delay-boh 1.0.1](https://github.com/vallaproductionsoriginal-byte/Delay-boh/releases/download/v1.0.1/Delay-boh-1.0.1-mac-arm64.zip) · [Tutte le release](https://github.com/vallaproductionsoriginal-byte/Delay-boh/releases)
 
 ![Interfaccia di Delay-boh: controlli del delay e pagina Time / Sync](docs/Delay-boh-interface.png)
 
@@ -10,18 +10,18 @@ Plug-in delay VST3 gratuito per **macOS Apple Silicon**, versione **1.0.0**.
 
 - Mac Apple Silicon, architettura arm64.
 - macOS 11 o successivo.
-- DAW o host compatibile con plug-in VST3 arm64.
+- DAW o host compatibile con plug-in VST3 o Audio Unit arm64.
 
 ## Installazione
 
 1. Scarica e apri lo ZIP della release.
-2. Copia `Delay-boh.vst3` in `~/Library/Audio/Plug-Ins/VST3/` (crea la cartella se manca). Nel Finder puoi aprire questo percorso con **Vai → Vai alla cartella…**.
+2. Installa il formato usato dalla tua DAW: copia `Delay-boh.vst3` in `~/Library/Audio/Plug-Ins/VST3/` oppure `Delay-boh.component` in `~/Library/Audio/Plug-Ins/Components/`. Puoi installare entrambi. Crea le cartelle se mancano; nel Finder puoi aprire ciascun percorso con **Vai → Vai alla cartella…**.
 3. Riavvia la DAW o avvia una nuova scansione dei plug-in.
-4. Carica **Delay-boh** tra gli effetti VST3.
+4. Carica **Delay-boh** tra gli effetti di **Valla Productions**. Il formato AU per macOS è il bundle `.component`.
 
-Conserva `LICENSE`, `THIRD_PARTY_NOTICES.md` e la cartella `licenses` se redistribuisci il pacchetto. Una copia delle licenze è inclusa anche nel bundle.
+Lo ZIP include entrambi i formati. Conserva `LICENSE`, `THIRD_PARTY_NOTICES.md` e la cartella `licenses` se redistribuisci il pacchetto. Una copia delle licenze è inclusa anche nei bundle.
 
-Il bundle ha una firma ad hoc e non è notarizzato da Apple. macOS potrebbe richiedere un'autorizzazione di sicurezza: dopo un eventuale blocco, controlla **Impostazioni di Sistema → Privacy e sicurezza** e autorizza il plug-in solo se proviene da questa release.
+I bundle hanno una firma ad hoc e non sono notarizzati da Apple. macOS potrebbe richiedere un'autorizzazione di sicurezza: dopo un eventuale blocco, controlla **Impostazioni di Sistema → Privacy e sicurezza** e autorizza il plug-in solo se proviene da questa release.
 
 ## Funzioni
 
@@ -41,10 +41,10 @@ Per impostare il tempo destro in modo indipendente, usa Dual, PingPong o Quad. L
 La release include un file con il checksum SHA-256 tra gli allegati. Dopo aver scaricato lo ZIP e il file `.sha256` nella stessa cartella, puoi verificarlo con:
 
 ```sh
-shasum -a 256 -c Delay-boh-1.0.0-mac-arm64.zip.sha256
+shasum -a 256 -c Delay-boh-1.0.1-mac-arm64.zip.sha256
 ```
 
-Build arm64 verificata, firma del bundle verificata, test DSP e host VST3 superati. La versione è stata verificata su un Mac Apple Silicon; non sono dichiarati test su tutte le versioni di macOS o su tutte le DAW.
+Build arm64 e firme dei bundle verificate, test DSP e host VST3/AU superati, Audio Unit validato con `auval`. La versione è stata verificata su un Mac Apple Silicon; non sono dichiarati test su tutte le versioni di macOS o su tutte le DAW.
 
 ## Licenza
 
