@@ -4,6 +4,7 @@
 
 - Produttore VST3 e copyright aggiornati a Valla Productions.
 - Aggiunto il formato Audio Unit (AU), distribuito come `Delay-boh.component` nello stesso pacchetto del VST3.
+- Aggiunto alla stessa release il pacchetto VST3 per Windows x64, con runtime C++ statico, istruzioni, licenze e checksum SHA-256.
 - Nome del produttore visibile nell'interfaccia; bundle macOS identificato come `com.vallaproductions.delayboh`.
 - Identificativi VST3 conservati per la compatibilità con le sessioni DAW esistenti.
 - Pacchetto, documentazione e immagine dell'interfaccia aggiornati; sostituisce la release pubblica 1.0.0.
