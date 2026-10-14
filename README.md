@@ -18,7 +18,7 @@ Plug-in delay gratuito di **Valla Productions**, versione **1.0.1**, per **macOS
 3. Su **Windows**, copia l'intera cartella `Delay-boh.vst3` in `C:\Program Files\Common Files\VST3\` (può richiedere i permessi di amministratore), oppure in una cartella VST3 personalizzata supportata dalla DAW. Mantieni intatti `Contents`, binario e risorse.
 4. Riavvia la DAW o avvia una nuova scansione dei plug-in, poi carica **Delay-boh** tra gli effetti di **Valla Productions**.
 
-Lo ZIP macOS include VST3 e AU; quello Windows include VST3 x64. Conserva `LICENSE`, `THIRD_PARTY_NOTICES.md` e la cartella `licenses` se redistribuisci il pacchetto. Una copia delle licenze è inclusa anche nei bundle.
+Lo ZIP macOS include VST3 e AU; quello Windows include VST3 x64. La redistribuzione richiede la previa autorizzazione scritta del titolare. In caso di redistribuzione autorizzata, conserva `LICENSE`, `THIRD_PARTY_NOTICES.md` e la cartella `licenses`. Una copia delle licenze è inclusa anche nei bundle.
 
 I bundle macOS hanno una firma ad hoc e non sono notarizzati da Apple. macOS potrebbe richiedere un'autorizzazione di sicurezza: dopo un eventuale blocco, controlla **Impostazioni di Sistema → Privacy e sicurezza** e autorizza il plug-in solo se proviene da questa release. Il VST3 Windows usa il runtime C++ statico, senza richiedere un'installazione separata del Visual C++ Redistributable; non ha una firma Authenticode.
 
@@ -55,9 +55,9 @@ Get-FileHash .\Delay-boh-1.0.1-win-x64.zip -Algorithm SHA256
 
 ## Licenza
 
-Delay-boh e la documentazione del progetto sono distribuiti sotto [licenza MIT](LICENSE). Questa release distribuisce il plug-in compilato; i sorgenti non sono inclusi.
+Delay-boh e la documentazione del progetto sono distribuiti sotto [licenza proprietaria](LICENSE). L'uso richiede l'autorizzazione espressa del titolare, nei limiti concessi. Modifiche e redistribuzione richiedono la previa autorizzazione scritta del titolare. Questa release distribuisce il plug-in compilato; i sorgenti non sono inclusi.
 
-Le componenti di terze parti mantengono le proprie licenze e non sono rilicenziate sotto la MIT del progetto. JUCE 9.0.3 è utilizzato dal distributore sotto licenza commerciale **JUCE Starter**. Le attribuzioni e i testi delle licenze sono in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) e nella cartella [licenses](licenses).
+Le componenti di terze parti mantengono le proprie licenze. JUCE 9.0.3 è utilizzato dal distributore sotto licenza commerciale **JUCE Starter**. Le attribuzioni e i testi delle licenze sono in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) e nella cartella [licenses](licenses).
 
 ## Problemi e feedback
 

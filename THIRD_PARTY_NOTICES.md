@@ -1,12 +1,12 @@
 # Third-party notices
 
-La licenza MIT di Delay-boh copre il software e la documentazione di Valla Productions. Le componenti di terze parti restano soggette alle proprie licenze; la MIT del progetto non concede diritti separati sul framework JUCE.
+La licenza proprietaria di Delay-boh copre il software e la documentazione di Valla Productions. Le componenti di terze parti restano soggette alle proprie licenze; la licenza del progetto non concede diritti separati sul framework JUCE.
 
 ## JUCE
 
 JUCE 9.0.3 — Copyright (c) Raw Material Software Limited.
 
-Il distributore utilizza JUCE sotto licenza commerciale **JUCE Starter**, con cui distribuisce il plug-in compilato. I destinatari possono usare il plug-in senza una licenza di sviluppo JUCE. Il framework JUCE non è distribuito separatamente né rilicenziato sotto MIT. Condizioni del framework: https://juce.com/legal/juce-9-licence/.
+Il distributore utilizza JUCE sotto licenza commerciale **JUCE Starter**, con cui distribuisce il plug-in compilato. I destinatari possono usare il plug-in senza una licenza di sviluppo JUCE. Il framework JUCE non è distribuito separatamente e mantiene la propria licenza. Condizioni del framework: https://juce.com/legal/juce-9-licence/.
 
 ## Librerie e avvisi
 
